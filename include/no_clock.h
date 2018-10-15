@@ -37,6 +37,7 @@
 //
 //   [Ed: The #ifdef allows syntax coloring/checking (in vim) only. Never define NEVER.]
 #ifdef NEVER /* DOCUMENTATION */
+#error This code should NEVER be enabled
      const sc_core::sc_time(1.0,SC_NS) ns;
      no_clock CLK1("CLK1",/*period*/10*ns,/*duty*/0.5,/*offset*/0*ns,/*1stpos*/true ,/*smpl*/1*ns,/*chg*/5*ns);
      no_clock CLK2("CLK2",/*period*/12*ns,/*duty*/0.3,/*offset*/1*ns,/*1stpos*/false,/*smpl*/3*ns,/*chg*/6*ns);
@@ -83,6 +84,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 //------------------------------------------------------------------------------
+#if SYSTEMC_VERSION < 20140417
 // Calculate a time remainder (missing from sc_time)
 inline sc_core::sc_time operator % ( const sc_core::sc_time& lhs, const sc_core::sc_time& rhs )
 {
@@ -92,6 +94,7 @@ inline sc_core::sc_time operator % ( const sc_core::sc_time& lhs, const sc_core:
   return sc_core::sc_time(rslt,sc_core::SC_SEC);
 }
 
+#endif
 //------------------------------------------------------------------------------
 // For consistency
 inline sc_core::sc_time operator % ( const sc_core::sc_time& lhs, const double& rhs )
@@ -261,7 +264,7 @@ public:
 
 private:
   // Don't allow copying
-  no_clock(no_clock& disallowed) {} // Copy constructor
+  no_clock(no_clock& disallowed __attribute__((unused))) {} // Copy constructor
   no_clock& operator= (no_clock& disallowed) {return disallowed;} // Assignment
   // Internal data
   get_time_t          m_get_time;// callback that returns current time
