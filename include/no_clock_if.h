@@ -64,12 +64,12 @@ class no_clock_if
   virtual bool               at_sample_time      ( void ) const = 0;
   virtual bool               at_setedge_time     ( void ) const = 0;
   // For compatibility if you really have/want to
-  virtual sc_core::sc_event& default_event       ( size_t events = 0 ) = 0;
-  virtual sc_core::sc_event& posedge_event       ( size_t events = 0 ) = 0;
-  virtual sc_core::sc_event& negedge_event       ( size_t events = 0 ) = 0;
-  virtual sc_core::sc_event& sample_event        ( size_t events = 0 ) = 0;
-  virtual sc_core::sc_event& setedge_event       ( size_t events = 0 ) = 0;
-  virtual sc_core::sc_event& value_changed_event ( size_t events = 0 ) = 0;
+  virtual const sc_core::sc_event& default_event       ( size_t events = 0 ) = 0;
+  virtual const sc_core::sc_event& posedge_event       ( size_t events = 0 ) = 0;
+  virtual const sc_core::sc_event& negedge_event       ( size_t events = 0 ) = 0;
+  virtual const sc_core::sc_event& sample_event        ( size_t events = 0 ) = 0;
+  virtual const sc_core::sc_event& setedge_event       ( size_t events = 0 ) = 0;
+  virtual const sc_core::sc_event& value_changed_event ( size_t events = 0 ) = 0;
   virtual bool               read                ( void ) const = 0;
 };
 #endif
