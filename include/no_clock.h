@@ -31,6 +31,9 @@
 //   fact, you should be able to replace no_clock with sc_clock at any time as
 //   the design is refined without much change to the underlying code.
 //
+//   New concepts include sampling and setting time offsets. This simplifies
+//   modeling setup & hold rules and aids verification.
+//
 //   Below are declarations and corresponding timing diagrams that may be useful
 //   to understanding the design.  We also provide a number of utility methods
 //   in the no_clock class as an aid to modeling.
@@ -40,19 +43,19 @@
 #error This code should NEVER be enabled
      const sc_core::sc_time(1.0,SC_NS) ns;
      no_clock CLK1("CLK1",/*period*/10*ns,/*duty*/0.5,/*offset*/0*ns,/*1stpos*/true ,/*smpl*/1*ns,/*chg*/5*ns);
-     no_clock CLK2("CLK2",/*period*/12*ns,/*duty*/0.3,/*offset*/1*ns,/*1stpos*/false,/*smpl*/3*ns,/*chg*/6*ns);
+     no_clock CLK2("CLK2",/*period*/12*ns,/*duty*/0.3,/*offset*/1*ns,/*1stpos*/false,/*smpl*/7*ns,/*chg*/9*ns);
 #endif
 //   Examples of above definitions impact to the virtual clocks they define.
 //   |                                |                                    |
 //   |       _0123456789_123456789_1  |       _123456789_123456789_123456  |
 //   |        :____     :____     :_  |       _:        ___:        ___:   |
-//   |  CLK1 _|    |____|    |____|   |  CLK2  |_______|   |_______|   |_  |
+//   |  CLK1 _|    |____|    |____|   |  CLK2  |_______|:  |_______|:  |_  |
 //   |        :    :    :    :    :   |        :  :  :     :  :  :     :   |
 //   |  DATA  :s   c    :s   c    :   |        :  s  c     :  s  c     :   |
 //   |        ::   :    ::   :    :   |        :  :  :     :  :  :     :   |
-//   |  Time  0:   :   10:   :   20   |  Time  1  :  :    13  :  :    25   |
-//   |         1   5    11  15        |           4  7       16 19         |
-//   |                                |                                    |
+//   |  Time  0:   :   10:   :   20   |  Time  1      8 10 13    20 22 25  |
+//   |         1   5    11  15        |        :<--7->: :                  |
+//   |                                |        :<---9-->:                  |
 //
 //   In diagram, (s)ample and (c)hange are simply abbreviations.
 //
@@ -174,7 +177,7 @@ class no_clock
 {
 public:
 
-  no_clock //< Constructor
+  no_clock //< Constructor (enhanced)
   ( const char*             clock_instance
   , const sc_core::sc_time& tPERIOD
   , double                  duty
@@ -183,7 +186,7 @@ public:
   , const sc_core::sc_time& tSETEDGE
   , bool                    positive
   );
-  no_clock //< Constructor
+  no_clock //< Constructor (original)
   ( const char*             clock_instance
   , const sc_core::sc_time& tPERIOD
   , double                  duty     = 0.5
